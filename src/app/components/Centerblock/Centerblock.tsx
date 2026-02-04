@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import Link from 'next/link';
-import styles from './centerblock.module.css';
+import styles from '@centerblock/centerblock.module.css';
 
 export default function Centerblock() {
   return (
