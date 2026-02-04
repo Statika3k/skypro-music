@@ -20,11 +20,11 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@components/*": ["./src/app/components/*"],
-      "@bar/*": ["./src/app/components/Bar/*"],
-      "@navigation/*": ["./src/app/components/Navigation/*"],
-      "@sidebar/*": ["./src/app/components/Sidebar/*"],
-      "@centerblock/*": ["./src/app/components/Centerblock/*"],
+      "@components/*": ["./src/components/*"],
+      "@bar/*": ["./src/components/Bar/*"],
+      "@navigation/*": ["./src/components/Navigation/*"],
+      "@sidebar/*": ["./src/components/Sidebar/*"],
+      "@centerblock/*": ["./src/components/Centerblock/*"],
       "@styles/*": ["./src/app/styles/*"],
       "@utils/*": ["./src/app/utils/*"]
     }
