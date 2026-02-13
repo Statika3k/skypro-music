@@ -26,7 +26,10 @@
       "@sidebar/*": ["./src/components/Sidebar/*"],
       "@centerblock/*": ["./src/components/Centerblock/*"],
       "@styles/*": ["./src/app/styles/*"],
-      "@utils/*": ["./src/app/utils/*"]
+      "@utils/*": ["./src/app/utils/*"],
+      "@search/*": ["./src/components/Search/*"],
+      "@types/*": ["./src/sharedTypes/sharedTypes/*"],
+      "@data/*": ["./src/data/*"]
     }
   },
   "include": [
