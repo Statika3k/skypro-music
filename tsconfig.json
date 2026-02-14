@@ -25,8 +25,14 @@
       "@navigation/*": ["./src/components/Navigation/*"],
       "@sidebar/*": ["./src/components/Sidebar/*"],
       "@centerblock/*": ["./src/components/Centerblock/*"],
+      "@track/*": ["./src/components/Track/*"],
+      "@filter/*": ["./src/components/Filter/*"],
+      "@filterItem/*": ["./src/components/FilterItem/*"],
       "@styles/*": ["./src/app/styles/*"],
-      "@utils/*": ["./src/app/utils/*"]
+      "@utils/*": ["./src/app/utils/*"],
+      "@search/*": ["./src/components/Search/*"],
+      "@types/*": ["./src/sharedTypes/sharedTypes/*"],
+      "@data/*": ["./src/data/*"]
     }
   },
   "include": [
