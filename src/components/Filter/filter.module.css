@@ -29,6 +29,8 @@
   transition: all 0.2s ease;
   cursor: pointer;
   white-space: nowrap;
+  position: relative;
+  z-index: 2;
 }
 
 .filter__button:hover {
@@ -45,7 +47,7 @@
 .filter__dropdown {
   position: absolute;
   top: 45px;
-  left: 106px;
+  left: 0;
   margin-top: 8px;
   background-color: #313131;
   border-radius: 12px;

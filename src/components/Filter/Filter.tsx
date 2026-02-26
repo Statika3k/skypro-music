@@ -3,7 +3,7 @@ import { TrackType } from '@/sharedTypes/sharedTypes';
 import { getUniqueValuesByKey, getUniqueYears } from '@/utils/helper';
 import styles from '@filter/filter.module.css';
 import classNames from 'classnames';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import FilterItem from '@components/FilterItem/FilterItem';
 
 type FilterType = 'author' | 'year' | 'genre' | null;
@@ -14,9 +14,12 @@ interface FilterProps {
 
 export default function Filter({ tracks }: FilterProps) {
   const [filterActiv, setFilterActiv] = useState<FilterType>(null);
-  const [selectedValues, setSelectedValues] = useState<Record<string, boolean>>(
-    {},
-  );
+  const [selectedValues, setSelectedValues] = useState<Record<string, boolean>>({});
+  const [dropdownLeft, setDropdownLeft] = useState(0);
+
+  const authorRef = useRef<HTMLDivElement>(null);
+  const yearRef = useRef<HTMLDivElement>(null);
+  const genreRef = useRef<HTMLDivElement>(null);
 
   const authors = useMemo(
     () => getUniqueValuesByKey(tracks, 'author').sort(),
@@ -29,10 +32,21 @@ export default function Filter({ tracks }: FilterProps) {
   );
 
   const handleFilterClick = (filterName: FilterType) => {
+
+    let left = 0;
+    if (filterName === 'author' && authorRef.current) {
+      left = authorRef.current.offsetLeft;
+    } else if (filterName === 'year' && yearRef.current) {
+      left = yearRef.current.offsetLeft;
+    } else if (filterName === 'genre' && genreRef.current) {
+      left = genreRef.current.offsetLeft;
+    }
+
     setFilterActiv((prev) => {
       const newFilter = prev === filterName ? null : filterName;
       if (newFilter !== prev) {
         setSelectedValues({});
+        setDropdownLeft(left);
       }
       return newFilter;
     });
@@ -83,11 +97,13 @@ export default function Filter({ tracks }: FilterProps) {
       default:
         return null;
     }
-  };
+  }; 
+
   return (
     <div className={styles.filterContainer}>
       <div className={styles.filter__title}>Искать по:</div>
       <div
+        ref={authorRef}
         className={classNames(styles.filter__button, {
           [styles.active]: filterActiv === 'author',
         })}
@@ -96,6 +112,7 @@ export default function Filter({ tracks }: FilterProps) {
         исполнителю
       </div>
       <div
+        ref={yearRef}
         className={classNames(styles.filter__button, {
           [styles.active]: filterActiv === 'year',
         })}
@@ -104,6 +121,7 @@ export default function Filter({ tracks }: FilterProps) {
         году выпуска
       </div>
       <div
+        ref={genreRef}
         className={classNames(styles.filter__button, {
           [styles.active]: filterActiv === 'genre',
         })}
@@ -113,7 +131,10 @@ export default function Filter({ tracks }: FilterProps) {
       </div>
 
       {filterActiv && (
-        <div className={styles.filter__dropdown}>
+        <div
+        className={styles.filter__dropdown}
+        style={{ left: `${dropdownLeft}px` }}
+        >
           <div className={styles.filter__list}>{getFilterItems()}</div>
         </div>
       )}
