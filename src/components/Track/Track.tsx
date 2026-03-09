@@ -27,21 +27,28 @@ export default function Track({ track }: TrackProps) {
   return (
     <div className={styles.playlist__item}>
       <div className={styles.playlist__track}>
-        <div className={styles.track__title}>       
-
-          <div className={styles.track__titleImage}>
+        <div className={styles.track__title}>
+          <div
+            className={styles.track__titleImage}
+            onClick={onClickTrack}
+            role="button"
+            tabIndex={0}
+            aria-label={`Воспроизвести трек ${track.name}`}
+          >
             {isActive ? (
               <span
                 className={classNames(styles.playingDot, {
                   [styles.playing]: isCurrentPlaying,
                 })}
-                aria-label={isCurrentPlaying ? 'Воспроизведение' : 'Текущий трек'}
+                aria-label={
+                  isCurrentPlaying ? 'Воспроизведение' : 'Текущий трек'
+                }
               ></span>
             ) : (
               <svg className={styles.track__titleSvg}>
                 <use xlinkHref="/img/icon/sprite.svg#icon-note"></use>
               </svg>
-            )}           
+            )}
           </div>
           <div>
             <Link
