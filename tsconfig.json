@@ -32,7 +32,8 @@
       "@utils/*": ["./src/app/utils/*"],
       "@search/*": ["./src/components/Search/*"],
       "@types/*": ["./src/sharedTypes/sharedTypes/*"],
-      "@data/*": ["./src/data/*"]
+      "@data/*": ["./src/data/*"],
+      "@progressBar/*": ["./src/components/ProgressBar/*"]
     }
   },
   "include": [
