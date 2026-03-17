@@ -38,18 +38,28 @@ export function formatTime(time: number) {
 }
 
 export function getUniqueYears(tracks: TrackType[]): string[] {
-  const years = tracks.map(track => {
-    if (track.release_date) {
-      const year = track.release_date.split('-')[0];
-      return `${year} год`;
-    }
-    return '';
-  }).filter(year => year !== '');
-  
+  const years = tracks
+    .map((track) => {
+      if (track.release_date) {
+        const year = track.release_date.split('-')[0];
+        return `${year} год`;
+      }
+      return '';
+    })
+    .filter((year) => year !== '');
+
   return [...new Set(years)].sort((a, b) => {
     const yearA = parseInt(a.split(' ')[0]);
     const yearB = parseInt(b.split(' ')[0]);
     return yearB - yearA;
   });
 }
-  
+
+export const getTimePanel = (
+  currentTime: number,
+  totalTime: number | undefined,
+) => {
+  if (totalTime) {
+    return `${formatTime(currentTime)} / ${formatTime(totalTime)}`;
+  }
+};

@@ -5,13 +5,14 @@ import styles from '@track/track.module.css';
 import { formatTime } from '@/utils/helper';
 import { TrackType } from '@/sharedTypes/sharedTypes';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { setCurrentTrack, setIsPlay } from '@/store/features/trackSlice';
+import { setCurrentPlaylist, setCurrentTrack, setIsPlaying } from '@/store/features/trackSlice';
 import classNames from 'classnames';
 
 type TrackProps = {
   track: TrackType;
+  playlist: TrackType[];
 };
-export default function Track({ track }: TrackProps) {
+export default function Track({ track, playlist }: TrackProps) {
   const currentTrack = useAppSelector((state) => state.tracks.currentTrack);
   const isPlaying = useAppSelector((state) => state.tracks.isPlay);
   const dispatch = useAppDispatch();
@@ -19,9 +20,10 @@ export default function Track({ track }: TrackProps) {
   const isActive = currentTrack?._id === track._id;
   const isCurrentPlaying = isActive && isPlaying;
 
-  const onClickTrack = () => {
+  const onClickCurrentTrack = () => {
     dispatch(setCurrentTrack(track));
-    dispatch(setIsPlay(true));
+    dispatch(setIsPlaying(true));
+    dispatch(setCurrentPlaylist(playlist));
   };
 
   return (
@@ -30,7 +32,7 @@ export default function Track({ track }: TrackProps) {
         <div className={styles.track__title}>
           <div
             className={styles.track__titleImage}
-            onClick={onClickTrack}
+            onClick={onClickCurrentTrack}
             role="button"
             tabIndex={0}
             aria-label={`Воспроизвести трек ${track.name}`}
@@ -54,7 +56,7 @@ export default function Track({ track }: TrackProps) {
             <Link
               className={styles.track__titleLink}
               href=""
-              onClick={onClickTrack}
+              onClick={onClickCurrentTrack}
             >
               {track.name}
             </Link>

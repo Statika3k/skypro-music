@@ -3,15 +3,28 @@ import Link from 'next/link';
 import styles from '@bar/bar.module.css';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { useEffect, useRef, useState } from 'react';
-import { setIsPlay } from '@/store/features/trackSlice';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import {
+  setIsPlaying,
+  setNextTrack,
+  setPrevTrack,
+  toggleShuffle,
+} from '@/store/features/trackSlice';
+import ProgressBar from '@components/ProgressBar/ProgressBar';
+import { formatTime } from '@/utils/helper';
 
 export default function Bar() {
   const currentTrack = useAppSelector((state) => state.tracks.currentTrack);
   const isPlaying = useAppSelector((state) => state.tracks.isPlay);
   const dispatch = useAppDispatch();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const isShuffle = useAppSelector((state) => state.tracks.isShuffle);
+
   const [volume, setVolume] = useState(0.5);
+  const [isLoop, setIsLoop] = useState(false);
+  const [isLoadedTrack, setIsLoadedTrack] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -32,21 +45,68 @@ export default function Bar() {
 
     if (isPlaying) {
       audio.play().catch((error) => {
-      console.warn('Playback blocked by browser:', error);  
-      dispatch(setIsPlay(false));
-      })
+        console.warn('Playback blocked by browser:', error);
+        dispatch(setIsPlaying(false));
+      });
     } else {
-      audio.pause();        
+      audio.pause();
     }
   }, [isPlaying, currentTrack, dispatch]);
 
   const togglePlay = () => {
-    dispatch(setIsPlay(!isPlaying));
+    dispatch(setIsPlaying(!isPlaying));
+  };
+
+  const toggleLoop = () => {
+    setIsLoop(!isLoop);
+  };
+
+  const onTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+      setDuration(audioRef.current.duration || 0);
+    }
+  };
+
+  const onEnded = () => {
+    if (isLoop) {
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play();
+        dispatch(setIsPlaying(false));
+      }
+    } else {
+      dispatch(setNextTrack());
+    }
+  };
+
+  const onLoadedMetadata = () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+      dispatch(setIsPlaying(true));
+      setIsLoadedTrack(true);
+    }
+  };
+
+  const onChangeProgress = (e: ChangeEvent<HTMLInputElement>) => {
+    if (audioRef.current) {
+      const inputTime = Number(e.target.value);
+
+      audioRef.current.currentTime = inputTime;
+    }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
+  };
+
+  const onNextTrack = () => {
+    dispatch(setNextTrack());
+  };
+
+  const onPrevTrack = () => {
+    dispatch(setPrevTrack());
   };
 
   if (!currentTrack) return null;
@@ -56,14 +116,34 @@ export default function Bar() {
         ref={audioRef}
         src={currentTrack?.track_file.trim()}
         preload="metadata"
+        loop={false}
+        onTimeUpdate={onTimeUpdate}
+        onLoadedMetadata={onLoadedMetadata}
+        onEnded={onEnded}
       ></audio>
 
       <div className={styles.bar__content}>
-        <div className={styles.bar__playerProgress}></div>
+        <ProgressBar
+          max={duration}
+          readOnly={!isLoadedTrack}
+          value={currentTime}
+          step={1}
+          onChange={onChangeProgress}
+        />
+        <div className={styles.bar__playerProgress}>
+          <span className={styles.playerProgress__time}>
+            {formatTime(currentTime)} / {formatTime(duration)}
+          </span>
+        </div>
         <div className={styles.bar__playerBlock}>
           <div className={styles.bar__player}>
             <div className={styles.player__controls}>
-              <div className={styles.player__btnPrev}>
+              <div
+                className={styles.player__btnPrev}
+                onClick={onPrevTrack}
+                role="button"
+                tabIndex={0}
+              >
                 <svg className={styles.player__btnPrevSvg}>
                   <use xlinkHref="/img/icon/sprite.svg#icon-prev"></use>
                 </svg>
@@ -87,14 +167,19 @@ export default function Bar() {
                 </svg>
               </div>
 
-              <div className={styles.player__btnNext}>
+              <div className={styles.player__btnNext} onClick={onNextTrack}>
                 <svg className={styles.player__btnNextSvg}>
                   <use xlinkHref="/img/icon/sprite.svg#icon-next"></use>
                 </svg>
               </div>
 
               <div
-                className={classNames(styles.player__btnRepeat, styles.btnIcon)}
+                onClick={toggleLoop}
+                className={classNames(
+                  styles.player__btnRepeat,
+                  styles.btnIcon,
+                  { [styles.active]: isLoop },
+                )}
               >
                 <svg className={styles.player__btnRepeatSvg}>
                   <use xlinkHref="/img/icon/sprite.svg#icon-repeat"></use>
@@ -105,7 +190,9 @@ export default function Bar() {
                 className={classNames(
                   styles.player__btnShuffle,
                   styles.btnIcon,
+                  { [styles.active]: isShuffle },
                 )}
+                onClick={() => dispatch(toggleShuffle())}
               >
                 <svg className={styles.player__btnShuffleSvg}>
                   <use xlinkHref="/img/icon/sprite.svg#icon-shuffle"></use>
@@ -142,7 +229,7 @@ export default function Bar() {
                   <svg className={styles.trackPlay__likeSvg}>
                     <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
                   </svg>
-                </div>                
+                </div>
               </div>
             </div>
           </div>
@@ -161,8 +248,8 @@ export default function Bar() {
                   )}
                   type="range"
                   name="range"
-                  min='0'
-                  max='1'
+                  min="0"
+                  max="1"
                   step="0.01"
                   value={volume}
                   onChange={handleVolumeChange}

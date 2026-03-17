@@ -18,8 +18,19 @@
 
 .bar__playerProgress {
   width: 100%;
-  height: 5px;
-  background: #2e2e2e;
+  height: 5px;  
+  position: relative;
+}
+
+.playerProgress__time {
+  position: absolute;
+  right: 12px;
+  top: -20px;
+  font-size: 12px;
+  color: #696969;
+  font-weight: 400;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .bar__playerBlock {
@@ -121,6 +132,17 @@
 
 .player__btnRepeat {
   margin-right: 24px;
+}
+
+.player__btnRepeat.active svg,
+.player__btnShuffle.active svg {
+  stroke: #FFFFFF;
+  fill: transparent;
+}
+
+.player__btnRepeat.active:hover svg,
+.player__btnShuffle.active:hover svg {
+  stroke: #ACACAC;
 }
 
 .player__btnRepeatSvg {
