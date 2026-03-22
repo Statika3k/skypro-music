@@ -10,3 +10,9 @@ export interface TrackType {
   track_file: string;
   stared_user: string[];
 }
+
+export type PlayListType = {
+  items: number[];
+  name: string;
+  _id: number;
+};
