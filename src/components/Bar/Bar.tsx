@@ -26,6 +26,12 @@ export default function Bar() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
+  const isPlayingRef = useRef(isPlaying);
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
+
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
@@ -38,20 +44,50 @@ export default function Bar() {
 
     const cleanSrc = currentTrack.track_file.trim();
 
+    const resetLoadedState = () => {
+      setIsLoadedTrack(false);
+    };
+
+    resetLoadedState();
+
     if (audio.src !== cleanSrc) {
       audio.src = cleanSrc;
       audio.load();
     }
 
+    const handleCanPlay = () => {
+      setIsLoadedTrack(true);
+      if (isPlayingRef.current) {
+        audio.play().catch((error) => {
+          console.warn('Playback failed:', error);
+          dispatch(setIsPlaying(false));
+        });
+      }
+    };
+
+    audio.addEventListener('canplay', handleCanPlay);
+
+    return () => {
+      audio.removeEventListener('canplay', handleCanPlay);
+    };
+  }, [currentTrack, dispatch]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !currentTrack || !isLoadedTrack) return;
+
     if (isPlaying) {
-      audio.play().catch((error) => {
-        console.warn('Playback blocked by browser:', error);
-        dispatch(setIsPlaying(false));
-      });
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.warn('Playback blocked:', error);
+          dispatch(setIsPlaying(false));
+        });
+      }
     } else {
       audio.pause();
     }
-  }, [isPlaying, currentTrack, dispatch]);
+  }, [isPlaying, currentTrack, isLoadedTrack, dispatch]);
 
   const togglePlay = () => {
     dispatch(setIsPlaying(!isPlaying));
@@ -73,7 +109,6 @@ export default function Bar() {
       if (audioRef.current) {
         audioRef.current.currentTime = 0;
         audioRef.current.play();
-        dispatch(setIsPlaying(false));
       }
     } else {
       dispatch(setNextTrack());
@@ -82,9 +117,7 @@ export default function Bar() {
 
   const onLoadedMetadata = () => {
     if (audioRef.current) {
-      audioRef.current.play();
-      dispatch(setIsPlaying(true));
-      setIsLoadedTrack(true);
+      setDuration(audioRef.current.duration);
     }
   };
 
