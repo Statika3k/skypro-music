@@ -34,43 +34,47 @@ type tokenReturn = {
 };
 
 type refreshTokenProps = {
-  refresh: string
-}
+  refresh: string;
+};
 
 export const authUser = (data: authUserProps): Promise<authUserReturn> => {
-  return axios.post(BASE_URL + '/user/login/', data, {
-    headers: {
-      'content-type': 'application/json',
-    },
-  });
+  return axios
+    .post(BASE_URL + '/user/login/', data, {
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
+    .then((res) => res.data);
 };
 
 export const registerUser = (
   data: registerUserProps,
 ): Promise<registerUserReturn> => {
-  return axios.post(BASE_URL + '/user/signup/', data, {
-    headers: {
-      'content-type': 'application/json',
-    },
-  });
-};
-
-export const getToken = (data: authUserProps): Promise<tokenReturn> => {
-  return axios.post(BASE_URL + '/user/token/', data, {
-    headers: {
-      'content-type': 'application/json',
-    },
-  });
-};
-
-export const refreshToken = (data: refreshTokenProps) => {
-  return axios.post(
-    BASE_URL + '/user/token/',
-    data,
-    {
+  return axios
+    .post(BASE_URL + '/user/signup/', data, {
       headers: {
         'content-type': 'application/json',
       },
-    },
-  );
+    })
+    .then((res) => res.data);
+};
+
+export const getToken = (data: authUserProps): Promise<tokenReturn> => {
+  return axios
+    .post(BASE_URL + '/user/token/', data, {
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
+    .then((res) => res.data);
+};
+
+export const refreshToken = (data: refreshTokenProps) => {
+  return axios
+    .post(BASE_URL + '/user/token/', data, {
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
+    .then((res) => res.data);
 };

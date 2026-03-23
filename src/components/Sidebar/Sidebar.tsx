@@ -1,13 +1,37 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from '@sidebar/sidebar.module.css'
+import styles from '@sidebar/sidebar.module.css';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function Sidebar() {
+  const [userName] = useState(() => {
+    if (typeof window === 'undefined') return 'Гость';
+    const user = localStorage.getItem('user');
+    if (user) {
+      try {
+        const userData = JSON.parse(user);
+        return userData.username || 'Гость';
+      } catch {
+        return 'Гость';
+      }
+    }
+    return 'Гость';
+  });
+
+  const router = useRouter();
+
+  const handleExit = () => {
+    localStorage.clear();
+    router.push('/auth/signin');
+  };
   return (
     <div className={styles.main__sidebar}>
       <div className={styles.sidebar__personal}>
-        <p className={styles.sidebar__personalName}>Sergey.Ivanov</p>
-        <div className={styles.sidebar__icon}>
+        <p className={styles.sidebar__personalName}>{userName}</p>
+        <div className={styles.sidebar__icon} onClick={handleExit}>
           <svg>
             <use xlinkHref="/img/icon/sprite.svg#logout"></use>
           </svg>

@@ -38,12 +38,17 @@ export default function Signin() {
     setIsLoading(true);
 
     authUser({ email, password })
-      .then((res) => {
-        console.log(res);
-        return getToken({email, password})
-      }).then((tokens) => {
+      .then((userData) => {
+        console.log(userData);
+        return getToken({ email, password }).then((tokens) => ({
+          tokens,
+          userData, 
+        }));
+      })
+      .then(({ tokens, userData }) => {
         localStorage.setItem('accessToken', tokens.access);
         localStorage.setItem('refreshToken', tokens.refresh);
+        localStorage.setItem('user', JSON.stringify(userData));
         router.push('/music/main');
       })
       .catch((error) => {
@@ -76,10 +81,10 @@ export default function Signin() {
     <>
       <Link href="/music/main">
         <div className={styles.modal__logo}>
-          <Image src="/img/logo_modal.png" alt="logo" width={140} height={21}/>
+          <Image src="/img/logo_modal.png" alt="logo" width={140} height={21} />
         </div>
       </Link>
-      
+
       <input
         className={classNames(styles.modal__input, styles.login)}
         type="email"
@@ -95,7 +100,7 @@ export default function Signin() {
         placeholder="Пароль"
         onChange={onChangePassword}
       />
-      
+
       <div className={styles.errorContainer}>{errorMessage}</div>
       <button
         type="submit"
@@ -107,7 +112,7 @@ export default function Signin() {
       </button>
       <Link href={'/auth/signup'} className={styles.modal__btnSignup}>
         Зарегистрироваться
-      </Link>      
+      </Link>
     </>
   );
 }
