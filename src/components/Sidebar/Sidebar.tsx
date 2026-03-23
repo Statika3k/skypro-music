@@ -4,24 +4,25 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from '@sidebar/sidebar.module.css';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Sidebar() {
-  const [userName] = useState(() => {
-    if (typeof window === 'undefined') return 'Гость';
-    const user = localStorage.getItem('user');
-    if (user) {
-      try {
-        const userData = JSON.parse(user);
-        return userData.username || 'Гость';
-      } catch {
-        return 'Гость';
+  const [userName, setUserName] = useState('Гость');
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const user = localStorage.getItem('user');
+      if (user) {
+        try {
+          const userData = JSON.parse(user);
+          setUserName(userData.username || 'Гость');
+        } catch {
+          setUserName('Гость');
+        }
       }
     }
-    return 'Гость';
-  });
-
-  const router = useRouter();
+  }, []);
 
   const handleExit = () => {
     localStorage.clear();
