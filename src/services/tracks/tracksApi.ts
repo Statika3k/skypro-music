@@ -13,7 +13,3 @@ export const getTracksSelection = (id: string): Promise<PlayListType> => {
         return res.data.data
     })
 }
-
-export const getTrackById = (id: string): Promise<TrackType> => {
-    return axios.get(BASE_URL + `/catalog/track/${id}/`).then((res) => res.data.data)
-}
