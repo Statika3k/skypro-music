@@ -18,3 +18,7 @@
   flex-direction: column;
   overflow-y: auto;
 }
+
+.errorContainer {  
+  color: red;
+}
