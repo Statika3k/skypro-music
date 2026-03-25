@@ -8,8 +8,15 @@ import { ChangeEvent, useState } from 'react';
 import { authUser, getToken } from '@/services/auth/authApi';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
+import { useAppDispatch } from '@/store/store';
+import {
+  setAccessToken,  
+  setRefreshToken,
+  setUsername,
+} from '@/store/features/authSlice';
 
 export default function Signin() {
+  const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -38,36 +45,27 @@ export default function Signin() {
     setIsLoading(true);
 
     authUser({ email, password })
-      .then((userData) => {
-        console.log(userData);
-        return getToken({ email, password }).then((tokens) => ({
-          tokens,
-          userData, 
-        }));
+      .then(() => {
+        dispatch(setUsername(email));
+        return getToken({ email, password });
       })
-      .then(({ tokens, userData }) => {
-        localStorage.setItem('accessToken', tokens.access);
-        localStorage.setItem('refreshToken', tokens.refresh);
-        localStorage.setItem('user', JSON.stringify(userData));
+      .then((res) => {
+        console.log(res);
+        dispatch(setAccessToken(res.access));
+        dispatch(setRefreshToken(res.refresh));
         router.push('/music/main');
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
           if (error.response) {
-            // Запрос был сделан, и сервер ответил кодом состояния, который
-            // выходит за пределы 2xx
             console.log(error.response.data);
             console.log(error.response.status);
             console.log(error.response.headers);
             setErrorMessage(error.response.data.message);
           } else if (error.request) {
-            // Запрос был сделан, но ответ не получен
-            // `error.request`- это экземпляр XMLHttpRequest в браузере и экземпляр
-            // http.ClientRequest в node.js
             console.log(error.request);
             setErrorMessage('Отсутствует интернет. Попробуйте позже');
           } else {
-            // Произошло что-то при настройке запроса, вызвавшее ошибку
             setErrorMessage('Неизвестная ошибка. Попробуйте позже');
           }
         }

@@ -4,34 +4,25 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from '@sidebar/sidebar.module.css';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useAppSelector } from '@/store/store';
+import { useDispatch } from 'react-redux';
+import { clearUser } from '@/store/features/authSlice';
 
 export default function Sidebar() {
-  const [userName, setUserName] = useState('Гость');
+  const userName = useAppSelector((state) => state.auth.username);
   const router = useRouter();
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const user = localStorage.getItem('user');
-      if (user) {
-        try {
-          const userData = JSON.parse(user);
-          setUserName(userData.username || 'Гость');
-        } catch {
-          setUserName('Гость');
-        }
-      }
-    }
-  }, []);
+  const dispatch = useDispatch();
+  
 
   const handleExit = () => {
-    localStorage.clear();
+    dispatch(clearUser())
+    localStorage.removeItem('userId');
     router.push('/auth/signin');
   };
   return (
     <div className={styles.main__sidebar}>
       <div className={styles.sidebar__personal}>
-        <p className={styles.sidebar__personalName}>{userName}</p>
+        <p className={styles.sidebar__personalName}>{userName || 'Гость'}</p>
         <div className={styles.sidebar__icon} onClick={handleExit}>
           <svg>
             <use xlinkHref="/img/icon/sprite.svg#logout"></use>

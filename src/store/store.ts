@@ -1,12 +1,14 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { trackSliceReducer } from './features/trackSlice';
+import { trackSliceReducer } from '@store/features/trackSlice';
 import { useDispatch, useSelector, useStore } from 'react-redux';
+import { authSliceReducer } from '@store/features/authSlice';
 
 export const makeStore = () => {
   return configureStore({
     reducer: combineReducers({
       tracks: trackSliceReducer,
-    }),
+      auth: authSliceReducer,
+    }), 
   });
 };
 
