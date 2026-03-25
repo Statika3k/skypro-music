@@ -40,6 +40,7 @@
       "@listheader/*": ["./src/components/Listheader/*"],
       "@tracklist/*": ["./src/components/Tracklist/*"],
       "@loading/*": ["./src/components/Loading/*"],
+      "@store/*": ["./src/store/*"],
     }
   },
   "include": [
