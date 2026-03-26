@@ -33,7 +33,14 @@
       "@search/*": ["./src/components/Search/*"],
       "@types/*": ["./src/sharedTypes/sharedTypes/*"],
       "@data/*": ["./src/data/*"],
-      "@progressBar/*": ["./src/components/ProgressBar/*"]
+      "@progressBar/*": ["./src/components/ProgressBar/*"],
+      "@auth/*": ["./src/app/auth/*"], 
+      "@signin/*": ["./src/app/auth/signin/*"],
+      "@signup/*": ["./src/app/auth/signup/*"],
+      "@listheader/*": ["./src/components/Listheader/*"],
+      "@tracklist/*": ["./src/components/Tracklist/*"],
+      "@loading/*": ["./src/components/Loading/*"],
+      "@store/*": ["./src/store/*"],
     }
   },
   "include": [
