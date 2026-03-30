@@ -5,8 +5,13 @@ import styles from '@track/track.module.css';
 import { formatTime } from '@/utils/helper';
 import { TrackType } from '@/sharedTypes/sharedTypes';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { setCurrentPlaylist, setCurrentTrack, setIsPlaying } from '@/store/features/trackSlice';
+import {
+  setCurrentPlaylist,
+  setCurrentTrack,
+  setIsPlaying,
+} from '@/store/features/trackSlice';
 import classNames from 'classnames';
+import { useLikeTrack } from '@/hooks/useLikeTracks';
 
 type TrackProps = {
   track: TrackType;
@@ -16,6 +21,7 @@ export default function Track({ track, playlist }: TrackProps) {
   const currentTrack = useAppSelector((state) => state.tracks.currentTrack);
   const isPlaying = useAppSelector((state) => state.tracks.isPlay);
   const dispatch = useAppDispatch();
+  const { toggleLike, isLike, isLoading } = useLikeTrack(track);
 
   const isActive = currentTrack?._id === track._id;
   const isCurrentPlaying = isActive && isPlaying;
@@ -73,9 +79,20 @@ export default function Track({ track, playlist }: TrackProps) {
           </Link>
         </div>
         <div>
-          <svg className={styles.track__timeSvg}>
-            <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
-          </svg>
+          <svg
+            className={classNames(styles.track__timeSvg, {
+              [styles.liked]: isLike,
+              [styles.loading]: isLoading,
+            })}
+            onClick={toggleLike}
+            role="button"
+            tabIndex={0}
+            aria-label={isLike ? 'Убрать из избранного' : 'Добавить в избранное'}
+          >
+            <use
+              xlinkHref={`/img/icon/sprite.svg#${isLike ? 'icon-like' : 'icon-dislike'}`}
+            ></use>
+            </svg>
           <span className={styles.track__timeText}>
             {formatTime(track.duration_in_seconds)}
           </span>
