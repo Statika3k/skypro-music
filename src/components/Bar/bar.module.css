@@ -266,6 +266,17 @@
   height: 12px;
   fill: transparent;
   stroke: #696969;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.trackPlay__likeSvg:hover {
+  transform: scale(1.2);
+}
+
+.trackPlay__likeSvg.liked {
+  stroke: #b672ff;
+  animation: pulse 0.3s ease;
 }
 
 .volume__content {
