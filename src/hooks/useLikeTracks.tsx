@@ -4,7 +4,7 @@ import { addLikedTracks, removeLikedTracks } from '@/store/features/trackSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { withReauth } from '@/utils/withReAuth';
 import { AxiosError } from 'axios';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 type returnTypeHook = {
   isLoading: boolean;
@@ -18,13 +18,14 @@ export const useLikeTrack = (track: TrackType | null): returnTypeHook => {
   const { access, refresh } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  const isLike = track
-    ? favoriteTracks.some((t) => t._id === track._id)
-    : false;
+  const isLike = useMemo(() => {
+    return track ? favoriteTracks.some((t) => t._id === track._id) : false;
+  }, [track, favoriteTracks]);
+
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const toggleLike = () => {
+  const toggleLike = useCallback(() => {
     if (!track) {
       return setErrorMsg('Трека не существует');
     }
@@ -65,7 +66,7 @@ export const useLikeTrack = (track: TrackType | null): returnTypeHook => {
       .finally(() => {
         setIsLoading(false);
       });
-  };
+  }, [track, access, refresh, dispatch, isLike]);
 
   return {
     isLoading,
