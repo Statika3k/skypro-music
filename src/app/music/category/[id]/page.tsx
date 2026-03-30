@@ -1,8 +1,9 @@
 'use client';
 
 import Centerblock from '@/components/Centerblock/Centerblock';
-import { getAllTracks, getTracksSelection } from '@/services/tracks/tracksApi';
+import { getTracksSelection } from '@/services/tracks/tracksApi';
 import { PlayListType, TrackType } from '@/sharedTypes/sharedTypes';
+import { useAppSelector } from '@/store/store';
 import { AxiosError } from 'axios';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -10,70 +11,52 @@ import { useEffect, useState } from 'react';
 export default function CategoryPage() {
   const params = useParams<{ id: string }>();
 
-  const [allTracks, setAllTracks] = useState<TrackType[]>([]);
-  const [categoryTracks, setCategoryTracks] = useState<TrackType[]>([]);
-  const [selectionName, setSelectionName] = useState('Подборка');
+  const { allTracks, fetchIsLoading, fetchError } = useAppSelector((state) => state.tracks);
+
   const [error, setError] = useState('');
+  const [namePlayList, setNamePlayList] = useState('');
+  const [categoryTracks, setCategoryTracks] = useState<TrackType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isTracksLoaded, setIsTracksLoaded] = useState(false);
 
   useEffect(() => {
-    getAllTracks()
-      .then((res) => {
-        setAllTracks(res);
-        setIsTracksLoaded(true);
-      })
-      .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setError(
-              error.response.data?.message || 'Ошибка загрузки подборки',
-            );
-          } else if (error.request) {
-            setError('Отсутствует интернет. Попробуйте позже');
-          } else {
-            setError('Неизвестная ошибка');
-          }
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (isTracksLoaded) {
+    if (!fetchIsLoading && allTracks.length) {
       getTracksSelection(params.id)
         .then((res: PlayListType) => {
-          setSelectionName(res.name);
+          setNamePlayList(res.name);
 
-          const filtered = allTracks.filter((track) =>
-            res.items.includes(track._id),
+          const idItems = res.items;
+
+          const filteredTracks = allTracks.filter((track) =>
+            idItems.includes(track._id),
           );
-          setCategoryTracks(filtered);
+
+          setCategoryTracks(filteredTracks);
         })
         .catch((error) => {
           if (error instanceof AxiosError) {
             if (error.response) {
-              setError(
-                error.response.data?.message || 'Ошибка загрузки подборки',
-              );
+              setError(error.response.data);
             } else if (error.request) {
-              setError('Отсутствует интернет. Попробуйте позже');
+              setError('Что-то с интернетом');
             } else {
               setError('Неизвестная ошибка');
             }
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
-  }, [params.id, isTracksLoaded, allTracks]);
+  }, [params.id, allTracks, fetchIsLoading]);
 
   return (
-    <Centerblock
-      playList={categoryTracks}
-      namePlaylist={selectionName}
-      isLoading={isLoading}
-      error={error}
-    />
+    <>
+      <Centerblock
+        playList={categoryTracks}        
+        namePlaylist={namePlayList}
+        isLoading={isLoading}
+        error={fetchError || error}
+      />
+    </>
   );
 }
