@@ -60,17 +60,15 @@ export default function Navigation() {
               Главное
             </Link>
           </li>
-          <li className={styles.menu__item}>
-            {isAuth ? (
+
+          {isAuth && (
+            <li className={styles.menu__item}>
               <Link href="/music/favorite" className={styles.menu__link}>
                 Мой плейлист
               </Link>
-            ) : (
-              <Link href="#" className={styles.menu__link}>
-                Мой плейлист
-              </Link>
-            )}
-          </li>
+            </li>
+          )}
+
           <li className={styles.menu__item}>
             {isAuth ? (
               <p onClick={logout} className={styles.menu__link}>
