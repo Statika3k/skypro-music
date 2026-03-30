@@ -3,7 +3,7 @@ import { TrackType } from '@/sharedTypes/sharedTypes';
 import { getUniqueValuesByKey, getUniqueYears } from '@/utils/helper';
 import styles from '@filter/filter.module.css';
 import classNames from 'classnames';
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import FilterItem from '@components/FilterItem/FilterItem';
 
 type FilterType = 'author' | 'year' | 'genre' | null;
@@ -14,7 +14,9 @@ interface FilterProps {
 
 export default function Filter({ tracks }: FilterProps) {
   const [filterActiv, setFilterActiv] = useState<FilterType>(null);
-  const [selectedValues, setSelectedValues] = useState<Record<string, boolean>>({});
+  const [selectedValues, setSelectedValues] = useState<Record<string, boolean>>(
+    {},
+  );
   const [dropdownLeft, setDropdownLeft] = useState(0);
 
   const authorRef = useRef<HTMLDivElement>(null);
@@ -31,8 +33,7 @@ export default function Filter({ tracks }: FilterProps) {
     [tracks],
   );
 
-  const handleFilterClick = (filterName: FilterType) => {
-
+  const handleFilterClick = useCallback((filterName: FilterType) => {
     let left = 0;
     if (filterName === 'author' && authorRef.current) {
       left = authorRef.current.offsetLeft;
@@ -50,9 +51,9 @@ export default function Filter({ tracks }: FilterProps) {
       }
       return newFilter;
     });
-  };
+  }, []);
 
-  const handleItemClick = (value: string) => {
+  const handleItemClick = useCallback((value: string) => {
     setSelectedValues((prev) => {
       const newValues = { ...prev };
       if (newValues[value]) {
@@ -63,9 +64,9 @@ export default function Filter({ tracks }: FilterProps) {
       }
       return newValues;
     });
-  };
+  }, []);
 
-  const getFilterItems = () => {
+  const getFilterItems = useMemo(() => {
     switch (filterActiv) {
       case 'author':
         return authors.map((author) => (
@@ -97,7 +98,7 @@ export default function Filter({ tracks }: FilterProps) {
       default:
         return null;
     }
-  }; 
+  }, [filterActiv, authors, years, genres, selectedValues, handleItemClick]);
 
   return (
     <div className={styles.filterContainer}>
@@ -132,10 +133,10 @@ export default function Filter({ tracks }: FilterProps) {
 
       {filterActiv && (
         <div
-        className={styles.filter__dropdown}
-        style={{ left: `${dropdownLeft}px` }}
+          className={styles.filter__dropdown}
+          style={{ left: `${dropdownLeft}px` }}
         >
-          <div className={styles.filter__list}>{getFilterItems()}</div>
+          <div className={styles.filter__list}>{getFilterItems}</div>
         </div>
       )}
     </div>

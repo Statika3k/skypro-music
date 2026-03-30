@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { useRouter } from 'next/navigation';
 import { clearUser } from '@/store/features/authSlice';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export default function Navigation() {
   const dispatch = useAppDispatch();
@@ -16,15 +16,15 @@ export default function Navigation() {
   const { access } = useAppSelector((state) => state.auth);
   const isAuth = !!access;
 
-  const toggleMenu = () => {
+  const toggleMenu = useCallback(() => {
     setIsMenuOpen((prev) => !prev);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     dispatch(clearUser());
     router.push('/music/main');
     setIsMenuOpen(false);
-  };
+  }, [dispatch, router]);
   return (
     <nav className={styles.main__nav}>
       <div className={styles.nav__logo}>
