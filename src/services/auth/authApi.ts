@@ -29,14 +29,14 @@ type registerUserReturn = {
 };
 
 type accessTokenProps = {
-  access: string;  
+  access: string;
 };
 
 type refreshTokenProps = {
   refresh: string;
 };
 
-type tokensType = accessTokenProps & refreshTokenProps
+type tokensType = accessTokenProps & refreshTokenProps;
 
 export const authUser = (data: authUserProps): Promise<authUserReturn> => {
   return axios
@@ -70,12 +70,16 @@ export const getToken = (data: authUserProps): Promise<tokensType> => {
     .then((res) => res.data);
 };
 
-export const refreshToken = (data: accessTokenProps) => {
+export const refreshToken = (refresh: string) => {
   return axios
-    .post(BASE_URL + '/user/token/refresh', data, {
-      headers: {
-        'content-type': 'application/json',
+    .post(
+      BASE_URL + '/user/token/refresh',
+      { refresh },
+      {
+        headers: {
+          'content-type': 'application/json',
+        },
       },
-    })
+    )
     .then((res) => res.data);
 };

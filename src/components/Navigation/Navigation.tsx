@@ -2,25 +2,29 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from '@navigation/navigation.module.css';
-import { useState } from 'react';
 import classNames from 'classnames';
-import { useAppDispatch } from '@/store/store';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 import { useRouter } from 'next/navigation';
 import { clearUser } from '@/store/features/authSlice';
+import { useCallback, useState } from 'react';
 
 export default function Navigation() {
   const dispatch = useAppDispatch();
   const router = useRouter();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { access } = useAppSelector((state) => state.auth);
+  const isAuth = !!access;
 
-  const toggleMenu = () => {
+  const toggleMenu = useCallback(() => {
     setIsMenuOpen((prev) => !prev);
-  };
+  }, []);
 
-  const loout = () => {
+  const logout = useCallback(() => {
     dispatch(clearUser());
-    router.push('/auth/signin');
-  };
+    router.push('/music/main');
+    setIsMenuOpen(false);
+  }, [dispatch, router]);
   return (
     <nav className={styles.main__nav}>
       <div className={styles.nav__logo}>
@@ -56,15 +60,29 @@ export default function Navigation() {
               Главное
             </Link>
           </li>
+
+          {isAuth && (
+            <li className={styles.menu__item}>
+              <Link href="/music/favorite" className={styles.menu__link}>
+                Мой плейлист
+              </Link>
+            </li>
+          )}
+
           <li className={styles.menu__item}>
-            <Link href="#" className={styles.menu__link}>
-              Мой плейлист
-            </Link>
-          </li>
-          <li className={styles.menu__item}>
-            <p onClick={loout} className={styles.menu__link}>
-              Войти
-            </p>
+            {isAuth ? (
+              <p onClick={logout} className={styles.menu__link}>
+                Выйти
+              </p>
+            ) : (
+              <Link
+                href="/auth/signin"
+                className={styles.menu__link}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Войти
+              </Link>
+            )}
           </li>
         </ul>
       </div>

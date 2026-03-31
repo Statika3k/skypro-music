@@ -8,13 +8,16 @@ import {
   setIsPlaying,
   setNextTrack,
   setPrevTrack,
-  toggleShuffle,
+  setIsShuffled,
 } from '@/store/features/trackSlice';
 import ProgressBar from '@components/ProgressBar/ProgressBar';
 import { formatTime } from '@/utils/helper';
+import { useLikeTrack } from '@/hooks/useLikeTracks';
 
 export default function Bar() {
   const currentTrack = useAppSelector((state) => state.tracks.currentTrack);
+  const { toggleLike: toggleLikeBar, isLike: isLikeBar } =
+    useLikeTrack(currentTrack);
   const isPlaying = useAppSelector((state) => state.tracks.isPlay);
   const dispatch = useAppDispatch();
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -225,7 +228,7 @@ export default function Bar() {
                   styles.btnIcon,
                   { [styles.active]: isShuffle },
                 )}
-                onClick={() => dispatch(toggleShuffle())}
+                onClick={() => dispatch(setIsShuffled(!isShuffle))}
               >
                 <svg className={styles.player__btnShuffleSvg}>
                   <use xlinkHref="/img/icon/sprite.svg#icon-shuffle"></use>
@@ -259,8 +262,22 @@ export default function Bar() {
                     styles.btnIcon,
                   )}
                 >
-                  <svg className={styles.trackPlay__likeSvg}>
-                    <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
+                  <svg
+                    className={classNames(styles.trackPlay__likeSvg, {
+                      [styles.liked]: isLikeBar,
+                    })}
+                    onClick={toggleLikeBar}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={
+                      isLikeBar
+                        ? 'Убрать из избранного'
+                        : 'Добавить в избранное'
+                    }
+                  >
+                    <use
+                      xlinkHref={`/img/icon/sprite.svg#${isLikeBar ? 'icon-like' : 'icon-dislike'}`}
+                    ></use>
                   </svg>
                 </div>
               </div>
