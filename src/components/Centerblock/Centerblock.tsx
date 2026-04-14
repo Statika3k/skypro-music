@@ -1,3 +1,5 @@
+'use client'
+
 import styles from '@centerblock/centerblock.module.css';
 import Search from '@/components/Search/Search';
 import Filter from '@components/Filter/Filter';
@@ -21,7 +23,7 @@ export default function Centerblock({
     <div className={styles.centerblock}>
       <Search />
       <h2 className={styles.centerblock__h2}>{namePlaylist || 'Треки'}</h2>
-      <Filter tracks={playList} />
+      <Filter />
       <Tracklist playList={playList} isLoading={isLoading} error={error} />
     </div>
   );

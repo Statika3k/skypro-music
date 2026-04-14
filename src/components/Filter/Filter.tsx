@@ -1,144 +1,85 @@
 'use client';
-import { TrackType } from '@/sharedTypes/sharedTypes';
-import { getUniqueValuesByKey, getUniqueYears } from '@/utils/helper';
+import { getUniqueValuesByKey } from '@/utils/helper';
 import styles from '@filter/filter.module.css';
-import classNames from 'classnames';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import FilterItem from '@components/FilterItem/FilterItem';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import {
+  setFilterAuthors,
+  setFilterGenres,
+  setFilterYears,
+} from '@/store/features/trackSlice';
 
-type FilterType = 'author' | 'year' | 'genre' | null;
+export default function Filter() {
+  const [activeFilter, setActiveFilter] = useState<null | string>(null);
+  const dispatch = useAppDispatch();
 
-interface FilterProps {
-  tracks: TrackType[];
-}
+  const { allTracks } = useAppSelector((state) => state.tracks);
 
-export default function Filter({ tracks }: FilterProps) {
-  const [filterActiv, setFilterActiv] = useState<FilterType>(null);
-  const [selectedValues, setSelectedValues] = useState<Record<string, boolean>>(
-    {},
-  );
-  const [dropdownLeft, setDropdownLeft] = useState(0);
+  // ✅ Проверка в консоли
+  useEffect(() => {
+    console.log('allTracks в Filter:', allTracks);
+    console.log('Количество треков:', allTracks.length);
+  }, [allTracks]);
 
-  const authorRef = useRef<HTMLDivElement>(null);
-  const yearRef = useRef<HTMLDivElement>(null);
-  const genreRef = useRef<HTMLDivElement>(null);
-
-  const authors = useMemo(
-    () => getUniqueValuesByKey(tracks, 'author').sort(),
-    [tracks],
-  );
-  const years = useMemo(() => getUniqueYears(tracks), [tracks]);
-  const genres = useMemo(
-    () => getUniqueValuesByKey(tracks, 'genre').sort(),
-    [tracks],
-  );
-
-  const handleFilterClick = useCallback((filterName: FilterType) => {
-    let left = 0;
-    if (filterName === 'author' && authorRef.current) {
-      left = authorRef.current.offsetLeft;
-    } else if (filterName === 'year' && yearRef.current) {
-      left = yearRef.current.offsetLeft;
-    } else if (filterName === 'genre' && genreRef.current) {
-      left = genreRef.current.offsetLeft;
+  const changeActiveFilter = (nameFilter: string) => {
+    if (activeFilter === nameFilter) {
+      return setActiveFilter(null);
     }
 
-    setFilterActiv((prev) => {
-      const newFilter = prev === filterName ? null : filterName;
-      if (newFilter !== prev) {
-        setSelectedValues({});
-        setDropdownLeft(left);
-      }
-      return newFilter;
-    });
-  }, []);
+    setActiveFilter(nameFilter);
+  };
 
-  const handleItemClick = useCallback((value: string) => {
-    setSelectedValues((prev) => {
-      const newValues = { ...prev };
-      if (newValues[value]) {
-        delete newValues[value];
-      } else {
-        Object.keys(newValues).forEach((key) => delete newValues[key]);
-        newValues[value] = true;
-      }
-      return newValues;
-    });
-  }, []);
+  const uniqAuthors = getUniqueValuesByKey(allTracks, 'author');  
+  const uniqGenres = getUniqueValuesByKey(allTracks, 'genre');
+  const years = ['Сначала новые', 'Сначала старые', 'По умолчанию'];
 
-  const getFilterItems = useMemo(() => {
-    switch (filterActiv) {
-      case 'author':
-        return authors.map((author) => (
-          <FilterItem
-            key={author}
-            text={author}
-            isActive={selectedValues[author]}
-            onClick={() => handleItemClick(author)}
-          />
-        ));
-      case 'year':
-        return years.map((year) => (
-          <FilterItem
-            key={year}
-            text={year}
-            isActive={selectedValues[year]}
-            onClick={() => handleItemClick(year)}
-          />
-        ));
-      case 'genre':
-        return genres.map((genre) => (
-          <FilterItem
-            key={genre}
-            text={genre}
-            isActive={selectedValues[genre]}
-            onClick={() => handleItemClick(genre)}
-          />
-        ));
-      default:
-        return null;
-    }
-  }, [filterActiv, authors, years, genres, selectedValues, handleItemClick]);
+  // 🔍 ОТЛАДКА
+  console.log('🎵 Все треки:', allTracks);
+  console.log('🎵 Первый трек:', allTracks[0]);
+  console.log('🎵 Авторы:', uniqAuthors);
+  console.log('🎵 Жанры:', uniqGenres);
+  console.log('🎵 Годы:', years);
+
+  const onSelectAuthor = (author: string) => {
+    dispatch(setFilterAuthors(author));
+  };
+
+  const onSelectGenres = (genres: string) => {
+    dispatch(setFilterGenres(genres));
+  };
+
+  const onSelectYear = (year: string) => {
+    dispatch(setFilterYears(year));
+  };
 
   return (
     <div className={styles.filterContainer}>
       <div className={styles.filter__title}>Искать по:</div>
-      <div
-        ref={authorRef}
-        className={classNames(styles.filter__button, {
-          [styles.active]: filterActiv === 'author',
-        })}
-        onClick={() => handleFilterClick('author')}
-      >
-        исполнителю
-      </div>
-      <div
-        ref={yearRef}
-        className={classNames(styles.filter__button, {
-          [styles.active]: filterActiv === 'year',
-        })}
-        onClick={() => handleFilterClick('year')}
-      >
-        году выпуска
-      </div>
-      <div
-        ref={genreRef}
-        className={classNames(styles.filter__button, {
-          [styles.active]: filterActiv === 'genre',
-        })}
-        onClick={() => handleFilterClick('genre')}
-      >
-        жанру
-      </div>
-
-      {filterActiv && (
-        <div
-          className={styles.filter__dropdown}
-          style={{ left: `${dropdownLeft}px` }}
-        >
-          <div className={styles.filter__list}>{getFilterItems}</div>
-        </div>
-      )}
+      <FilterItem
+        activFilter={activeFilter}
+        changeActiveFilter={changeActiveFilter}
+        nameFilter={'author'}
+        list={uniqAuthors}
+        titleFilter={'исполнителю'}
+        onSelect={onSelectAuthor}
+      />
+      <FilterItem
+        activFilter={activeFilter}
+        changeActiveFilter={changeActiveFilter}
+        nameFilter={'years'}
+        list={years}
+        titleFilter={'году выпуска'}
+        onSelect={onSelectYear}
+      />
+      <FilterItem
+        activFilter={activeFilter}
+        changeActiveFilter={changeActiveFilter}
+        nameFilter={'genre'}
+        list={uniqGenres}
+        titleFilter={'жанру'}
+        onSelect={onSelectGenres}
+      />
     </div>
   );
 }

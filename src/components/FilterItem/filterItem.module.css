@@ -1,3 +1,94 @@
+.filter__wrapper {  
+  position: relative;
+  display: inline-block;
+}
+
+.filter__button {
+  display: flex;
+  gap: 10px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  border: 1px solid #ffffff;
+  border-radius: 60px;
+  padding: 6px 20px;
+  color: white;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  z-index: 2;
+}
+
+.filter__button:hover {
+  border-color: #d9b6ff;
+  color: #d9b6ff;
+}
+
+.filter__button:active,
+.filter__button.active {
+  border-color: #ad61ff;
+  color: #ad61ff;
+}
+
+.filter__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;  
+  background-color: #313131;
+  border-radius: 12px;
+  padding: 24px;
+  width: 248px;
+  max-height: 320px;
+  z-index: 1000;
+  overflow: visible;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filter__list {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 240px;
+  overflow-y: auto;  
+  width: 100%;
+  padding-right: 10px;
+  margin: 0;
+  list-style: none;
+}
+
+.filter__list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.filter__list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.filter__list::-webkit-scrollbar-thumb {
+  background-color: #696969;
+  border-radius: 4px;
+}
+
+.filter__list::-webkit-scrollbar-thumb:hover {
+  background-color: #ad61ff;
+}
+
 .filter__item {
   font-style: normal;
   font-weight: 400;
@@ -5,31 +96,18 @@
   line-height: 24px;
   color: #ffffff;
   cursor: pointer;
-  transition: color 0.2s ease;
-  list-style: none;
+  transition: color 0.2s ease;  
   white-space: nowrap;  
-  text-overflow: ellipsis;
-  max-width: 100%;
-  background: none;
-  border: none;
-  text-align: left;  
-  width: 100%;
-  border-radius: 4px;
+  text-overflow: ellipsis;  
 }
 
 .filter__item:hover {
   color: #d9b6ff;
-  
-}
-
-.filter__item.active {
-  color: #ad61ff;
-  
-}
-
-.filter__item.active {
-  color: #ad61ff;
-  font-weight: 500;
   text-decoration: underline;
-  
 }
+
+.filter__item.active {
+  color: #ad61ff;
+  text-decoration: underline;
+}
+
