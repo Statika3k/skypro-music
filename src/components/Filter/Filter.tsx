@@ -1,6 +1,6 @@
 'use client';
 import { getUniqueValuesByKey } from '@/utils/helper';
-import styles from '@/filter/filter.module.css';
+import styles from '@filter/filter.module.css';
 import { useEffect, useState } from 'react';
 import FilterItem from '@/components/FilterItem/FilterItem';
 import { useAppDispatch, useAppSelector } from '@/store/store';
@@ -14,13 +14,17 @@ export default function Filter() {
   const [activeFilter, setActiveFilter] = useState<null | string>(null);
   const dispatch = useAppDispatch();
 
-  const { allTracks } = useAppSelector((state) => state.tracks);
+  const { allTracks, filters } = useAppSelector((state) => state.tracks);
 
   // ✅ Проверка в консоли
   useEffect(() => {
     console.log('allTracks в Filter:', allTracks);
     console.log('Количество треков:', allTracks.length);
   }, [allTracks]);
+
+  useEffect(() => {
+    console.log('🎵 Текущие фильтры:', filters);
+  }, [filters]);
 
   const changeActiveFilter = (nameFilter: string) => {
     if (activeFilter === nameFilter) {
@@ -30,7 +34,7 @@ export default function Filter() {
     setActiveFilter(nameFilter);
   };
 
-  const uniqAuthors = getUniqueValuesByKey(allTracks, 'author');  
+  const uniqAuthors = getUniqueValuesByKey(allTracks, 'author');
   const uniqGenres = getUniqueValuesByKey(allTracks, 'genre');
   const years = ['Сначала новые', 'Сначала старые', 'По умолчанию'];
 
@@ -56,6 +60,7 @@ export default function Filter() {
         list={uniqAuthors}
         titleFilter={'исполнителю'}
         onSelect={onSelectAuthor}
+        selectedValues={filters.authors}
       />
       <FilterItem
         activFilter={activeFilter}
@@ -64,6 +69,7 @@ export default function Filter() {
         list={years}
         titleFilter={'году выпуска'}
         onSelect={onSelectYear}
+        selectedValues={filters.years ? [filters.years] : []}
       />
       <FilterItem
         activFilter={activeFilter}
@@ -72,6 +78,7 @@ export default function Filter() {
         list={uniqGenres}
         titleFilter={'жанру'}
         onSelect={onSelectGenres}
+        selectedValues={filters.genres}
       />
     </div>
   );

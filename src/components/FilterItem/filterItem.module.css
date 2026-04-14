@@ -99,15 +99,16 @@
   transition: color 0.2s ease;  
   white-space: nowrap;  
   text-overflow: ellipsis;  
+  text-decoration: none;
 }
 
 .filter__item:hover {
   color: #d9b6ff;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .filter__item.active {
   color: #ad61ff;
-  text-decoration: underline;
+  text-decoration: none;
 }
 

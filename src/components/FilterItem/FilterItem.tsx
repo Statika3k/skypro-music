@@ -9,6 +9,7 @@ interface filterItemProps {
   list: string[];
   titleFilter: string;
   onSelect: (value: string) => void;
+  selectedValues?: string[];
 }
 
 export default function FilterItem({
@@ -18,6 +19,7 @@ export default function FilterItem({
   list,
   titleFilter,
   onSelect,
+  selectedValues = [],
 }: filterItemProps) {
   return (
     <div className={styles.filter__wrapper}>
@@ -32,15 +34,21 @@ export default function FilterItem({
       {activFilter === nameFilter && (
         <div className={styles.filter__dropdown}>
           <ul className={styles.filter__list}>
-            {list.map((el, index) => (
-              <li
-                key={index}
-                onClick={() => onSelect(el)}
-                className={styles.filter__item}
-              >
-                {el}
-              </li>
-            ))}
+            {list.map((el, index) => {
+              const isActive = selectedValues.includes(el);
+              
+              return (
+                <li
+                  key={index}
+                  onClick={() => onSelect(el)}
+                  className={classNames(styles.filter__item, {
+                    [styles.active]: isActive,
+                  })}
+                >
+                  {el}                  
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
