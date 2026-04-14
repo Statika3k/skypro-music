@@ -12,10 +12,9 @@ export default function Sidebar() {
   const userName = useAppSelector((state) => state.auth.username);
   const router = useRouter();
   const dispatch = useDispatch();
-  
 
   const handleExit = () => {
-    dispatch(clearUser())
+    dispatch(clearUser());
     localStorage.removeItem('userId');
     router.push('/auth/signin');
   };
@@ -23,7 +22,11 @@ export default function Sidebar() {
     <div className={styles.main__sidebar}>
       <div className={styles.sidebar__personal}>
         <p className={styles.sidebar__personalName}>{userName || 'Гость'}</p>
-        <div className={styles.sidebar__icon} onClick={handleExit}>
+        <div
+          className={styles.sidebar__icon}
+          onClick={handleExit}
+          data-testid="sidebar-exit"
+        >
           <svg>
             <use xlinkHref="/img/icon/sprite.svg#logout"></use>
           </svg>

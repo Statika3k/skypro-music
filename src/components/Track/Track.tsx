@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import styles from '@track/track.module.css';
+import styles from '@/track/track.module.css';
 import { formatTime } from '@/utils/helper';
 import { TrackType } from '@/sharedTypes/sharedTypes';
 import { useAppDispatch, useAppSelector } from '@/store/store';

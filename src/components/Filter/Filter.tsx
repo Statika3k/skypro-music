@@ -1,8 +1,8 @@
 'use client';
 import { getUniqueValuesByKey } from '@/utils/helper';
-import styles from '@filter/filter.module.css';
+import styles from '@/filter/filter.module.css';
 import { useEffect, useState } from 'react';
-import FilterItem from '@components/FilterItem/FilterItem';
+import FilterItem from '@/components/FilterItem/FilterItem';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import {
   setFilterAuthors,
