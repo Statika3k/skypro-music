@@ -26,6 +26,22 @@
   padding-bottom: 10px;
 }
 
+.noTracks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #696969;
+  font-size: 18px;
+  text-align: center;
+  flex: 1;
+}
+
+.noTracks p {
+  margin: 0;
+}
+
 /* Стилизация скроллбара */
 .content__playlist::-webkit-scrollbar {
   width: 6px;
