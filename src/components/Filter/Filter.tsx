@@ -34,13 +34,6 @@ export default function Filter() {
   const uniqGenres = getUniqueValuesByKey(allTracks, 'genre');
   const years = ['Сначала новые', 'Сначала старые', 'По умолчанию'];
 
-  // 🔍 ОТЛАДКА
-  console.log('🎵 Все треки:', allTracks);
-  console.log('🎵 Первый трек:', allTracks[0]);
-  console.log('🎵 Авторы:', uniqAuthors);
-  console.log('🎵 Жанры:', uniqGenres);
-  console.log('🎵 Годы:', years);
-
   const onSelectAuthor = (author: string) => {
     dispatch(setFilterAuthors(author));
   };

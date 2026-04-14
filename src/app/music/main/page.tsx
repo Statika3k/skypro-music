@@ -26,9 +26,6 @@ export default function Home() {
     dispatch(setFetchIsLoading(true));
     getAllTracks()
       .then((res) => {
-        // ✅ Отправляем треки в Redux
-        console.log('🎵 Треки из API:', res); // ← Для отладки
-        console.log('🎵 Длина массива:', res.length); // ← Проверьте здесь
         
         dispatch(setAllTracks(res));
         dispatch(setFetchError(''));
