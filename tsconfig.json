@@ -19,7 +19,6 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@bar/*": ["./src/components/Bar/*"],
       "@navigation/*": ["./src/components/Navigation/*"],
@@ -28,19 +27,22 @@
       "@track/*": ["./src/components/Track/*"],
       "@filter/*": ["./src/components/Filter/*"],
       "@filterItem/*": ["./src/components/FilterItem/*"],
-      "@styles/*": ["./src/app/styles/*"],
-      "@utils/*": ["./src/app/utils/*"],
       "@search/*": ["./src/components/Search/*"],
-      "@types/*": ["./src/sharedTypes/sharedTypes/*"],
-      "@data/*": ["./src/data/*"],
+      "@tracklist/*": ["./src/components/Tracklist/*"],
+      "@listheader/*": ["./src/components/Listheader/*"],
+      "@loading/*": ["./src/components/Loading/*"],
       "@progressBar/*": ["./src/components/ProgressBar/*"],
-      "@auth/*": ["./src/app/auth/*"], 
+      
+      "@store/*": ["./src/store/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@sharedTypes/*": ["./src/sharedTypes/*"],
+      "@data/*": ["./src/data/*"],
+      
+      "@auth/*": ["./src/app/auth/*"],
       "@signin/*": ["./src/app/auth/signin/*"],
       "@signup/*": ["./src/app/auth/signup/*"],
-      "@listheader/*": ["./src/components/Listheader/*"],
-      "@tracklist/*": ["./src/components/Tracklist/*"],
-      "@loading/*": ["./src/components/Loading/*"],
-      "@store/*": ["./src/store/*"],
+
+      "@/*": ["./src/*"],      
     }
   },
   "include": [
