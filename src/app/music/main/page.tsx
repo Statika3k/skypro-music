@@ -25,8 +25,7 @@ export default function Home() {
   useEffect(() => {
     dispatch(setFetchIsLoading(true));
     getAllTracks()
-      .then((res) => {
-        
+      .then((res) => {        
         dispatch(setAllTracks(res));
         dispatch(setFetchError(''));
       })

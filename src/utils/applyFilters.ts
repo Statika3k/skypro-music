@@ -1,7 +1,10 @@
-import { TrackType } from "@/sharedTypes/sharedTypes";
-import { initialStateType } from "@/store/features/trackSlice";
+import { TrackType } from '@/sharedTypes/sharedTypes';
+import { initialStateType } from '@/store/features/trackSlice';
 
-export const sortByYear = (tracks: TrackType[], sortType: string): TrackType[] => {
+export const sortByYear = (
+  tracks: TrackType[],
+  sortType: string,
+): TrackType[] => {
   if (sortType === 'Сначала новые') {
     return [...tracks].sort((a, b) => {
       const yearA = parseInt(a.release_date.split('-')[0]);
@@ -19,18 +22,27 @@ export const sortByYear = (tracks: TrackType[], sortType: string): TrackType[] =
 };
 
 export const applyFilters = (state: initialStateType): TrackType[] => {
-    let filteredPlaylist = [...state.pagePlaylist];
+  let filteredPlaylist = [...state.pagePlaylist];
 
-    if (state.filters.authors.length > 0) {
-        filteredPlaylist = filteredPlaylist.filter((track) => {
-          return state.filters.authors.includes(track.author);
-        });
-      }
+  if (state.searchQuery) {
+    filteredPlaylist = filteredPlaylist.filter((track) =>
+      track.name.toLowerCase().includes(state.searchQuery.toLowerCase()),
+    );
+  }
 
-      if (state.filters.genres.length > 0) {
-        filteredPlaylist = filteredPlaylist.filter((track) => {
-          return state.filters.genres.some((genre) => track.genre.includes(genre));
-        });
-      }
-      return filteredPlaylist;      
-}
+  if (state.filters.authors.length > 0) {
+    filteredPlaylist = filteredPlaylist.filter((track) =>
+      state.filters.authors.includes(track.author),
+    );
+  }
+
+  if (state.filters.genres.length > 0) {
+    filteredPlaylist = filteredPlaylist.filter((track) =>
+      state.filters.genres.some((genre) => track.genre.includes(genre)),
+    );
+  }
+
+  filteredPlaylist = sortByYear(filteredPlaylist, state.filters.years);
+
+  return filteredPlaylist;
+};
