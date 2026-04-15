@@ -29,8 +29,7 @@ export default function FetchingTracks() {
             if (error.response) {
               dispatch(setFetchError(error.response.data));
             } else if (error.request) {
-              dispatch(setFetchError('Произошла ошибка. Попробуйте позже'));
-              console.log(error)
+              dispatch(setFetchError('Произошла ошибка. Попробуйте позже'));              
             } else {
               dispatch(setFetchError('Неизвестная ошибка'));
             }
