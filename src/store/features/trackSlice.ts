@@ -130,8 +130,9 @@ const trackSlice = createSlice({
     setFetchIsLoading: (state, action: PayloadAction<boolean>) => {
       state.fetchIsLoading = action.payload;
     },
-    setPagePlaylist: (state, action) => {
+    setPagePlaylist: (state, action: PayloadAction<TrackType[]>) => {
       state.pagePlaylist = action.payload;
+      state.filterTracks = action.payload;
     },
     setFilterAuthors: (state, action: PayloadAction<string>) => {
       const author = action.payload;

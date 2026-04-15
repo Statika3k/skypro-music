@@ -48,6 +48,7 @@ export default function Home() {
   return (
     <>
       <Centerblock
+        key="main"
         playList={filterTracks}
         namePlaylist="Треки"
         isLoading={fetchIsLoading}

@@ -2,24 +2,34 @@
 
 import Centerblock from '@/components/Centerblock/Centerblock';
 import { getTracksSelection } from '@/services/tracks/tracksApi';
-import { PlayListType, TrackType } from '@/sharedTypes/sharedTypes';
-import { useAppSelector } from '@/store/store';
+import { PlayListType } from '@/sharedTypes/sharedTypes';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import {
+  resetFilters,
+  setFetchError,  
+  setPagePlaylist,
+} from '@/store/features/trackSlice';
 import { AxiosError } from 'axios';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function CategoryPage() {
   const params = useParams<{ id: string }>();
+  const dispatch = useAppDispatch();
 
-  const { allTracks, fetchIsLoading, fetchError } = useAppSelector((state) => state.tracks);
+  const { allTracks, fetchError, filterTracks } =
+    useAppSelector((state) => state.tracks);
 
   const [error, setError] = useState('');
   const [namePlayList, setNamePlayList] = useState('');
-  const [categoryTracks, setCategoryTracks] = useState<TrackType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!fetchIsLoading && allTracks.length) {
+    dispatch(resetFilters());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (allTracks.length > 0) {
       getTracksSelection(params.id)
         .then((res: PlayListType) => {
           setNamePlayList(res.name);
@@ -30,29 +40,33 @@ export default function CategoryPage() {
             idItems.includes(track._id),
           );
 
-          setCategoryTracks(filteredTracks);
+          dispatch(setPagePlaylist(filteredTracks));
         })
         .catch((error) => {
           if (error instanceof AxiosError) {
             if (error.response) {
+              dispatch(setFetchError(error.response.data));
               setError(error.response.data);
             } else if (error.request) {
+              dispatch(setFetchError('Что-то с интернетом'));
               setError('Что-то с интернетом');
             } else {
+              dispatch(setFetchError('Неизвестная ошибка'));
               setError('Неизвестная ошибка');
             }
           }
         })
-        .finally(() => {
+        .finally(() => {          
           setIsLoading(false);
         });
     }
-  }, [params.id, allTracks, fetchIsLoading]);
+  }, [params.id, allTracks, dispatch]);
 
   return (
     <>
       <Centerblock
-        playList={categoryTracks}        
+        key={`category-${params.id}`}
+        playList={filterTracks}
         namePlaylist={namePlayList}
         isLoading={isLoading}
         error={fetchError || error}
