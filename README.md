@@ -1,36 +1,285 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎵 SkyPro Music
 
-## Getting Started
+> **Учебный проект** в рамках обучения на платформе SkyPro
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black?style=flat&logo=next.js)
+![React](https://img.shields.io/badge/React-19.0.0-61DAFB?style=flat&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat&logo=typescript)
+![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-2.0-764ABC?style=flat&logo=redux)
+![Jest](https://img.shields.io/badge/Jest-29.0-C21325?style=flat&logo=jest)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 📋 О проекте
+
+**SkyPro Music** — это учебный проект музыкального стримингового сервиса, разработанный в рамках курса по React и Next.js. Приложение позволяет прослушивать треки, управлять плейлистами, применять фильтры и поиск, а также сохранять избранные композиции.
+
+### 🎯 Цель проекта
+- Освоить работу с **Next.js 16** (App Router, Turbopack)
+- Научиться управлять состоянием с помощью **Redux Toolkit**
+- Реализовать аутентификацию и работу с **JWT-токенами**
+- Разработать систему фильтрации, поиска и сортировки данных
+- Покрыть код тестами с помощью **Jest** и **React Testing Library**
+- Применить лучшие практики типизации на **TypeScript**
+
+---
+
+## ✨ Реализованный функционал
+
+### 🔐 Авторизация и регистрация
+- Регистрация нового пользователя
+- Вход в систему с сохранением токена в `localStorage`
+- Автоматический редирект после успешной авторизации
+- Защита приватных маршрутов
+- Корректная обработка ошибок API
+
+### 🎧 Музыкальный плеер
+- Воспроизведение/пауза трека
+- Переключение на следующий/предыдущий трек
+- Зацикливание текущего трека
+- Перемешивание плейлиста (shuffle)
+- Перемотка через прогресс-бар
+- Регулировка громкости
+- Отображение текущего и общего времени трека
+
+### 🔍 Поиск и фильтрация
+- **Поиск** по названию трека (в реальном времени с debounce)
+- **Фильтр по исполнителю** (множественный выбор)
+- **Фильтр по жанру** (множественный выбор)
+- **Сортировка по году выпуска**:
+  - Сначала новые
+  - Сначала старые
+  - По умолчанию
+- **Комбинированная фильтрация** (все условия работают по логике AND)
+- Списки фильтров формируются из **неотфильтрованных** треков
+- Автоматический сброс фильтров при переходе между страницами
+- Сообщение «Нет подходящих треков» при пустом результате
+
+### ❤️ Избранные треки
+- Добавление/удаление треков в избранное
+- Страница «Мой плейлист» с личными треками
+- Синхронизация состояния лайков с сервером
+- Блокировка действий для неавторизованных пользователей
+
+### 🎨 Интерфейс
+- Адаптивная вёрстка под макет
+- Плавные анимации и переходы
+- Кастомные скроллбары
+- Иконки из SVG-спрайта
+- Тёмная тема в стиле музыкальных стриминговых сервисов
+
+---
+
+## 🛠️ Технологический стек
+
+| Категория | Технологии |
+|-----------|-----------|
+| **Фреймворк** | Next.js 16.1.6 (App Router, Turbopack) |
+| **Библиотека** | React 19.0.0 |
+| **Язык** | TypeScript 5.0 |
+| **Стейт-менеджер** | Redux Toolkit 2.0 |
+| **HTTP-клиент** | Axios |
+| **Тестирование** | Jest, React Testing Library, ts-jest |
+| **Стилизация** | CSS Modules |
+| **Утилиты** | classnames, ESLint, Prettier |
+
+---
+
+## 📁 Структура проекта
+
+```
+skypro-music/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── auth/              # Страницы авторизации
+│   │   │   ├── signin/
+│   │   │   └── signup/
+│   │   └── music/             # Страницы музыкального раздела
+│   │       ├── main/          # Главная страница с треками
+│   │       ├── category/[id]/ # Страницы подборок
+│   │       └── favorite/      # Избранные треки
+│   │       └── layout.tsx     # Layout с плеером
+│   ├── components/            # Переиспользуемые компоненты
+│   │   ├── Bar/               # Плеер (нижняя панель)
+│   │   ├── Centerblock/       # Центральная область с треками
+│   │   ├── Filter/            # Компонент фильтрации
+│   │   ├── FilterItem/        # Элемент выпадающего фильтра
+│   │   ├── Navigation/        # Верхнее меню навигации
+│   │   ├── Search/            # Поле поиска
+│   │   ├── Sidebar/           # Боковая панель с подборками
+│   │   ├── Track/             # Карточка трека
+│   │   ├── Tracklist/         # Список треков
+│   │   └── Loading/           # Индикатор загрузки
+│   ├── store/                 # Redux store
+│   │   ├── features/          # Слайсы: authSlice, trackSlice
+│   │   ├── store.ts           # Конфигурация store
+│   │   └── ReduxProvider.tsx  # Провайдер для React
+│   ├── services/              # API-сервисы
+│   │   └── tracks/
+│   │       └── tracksApi.ts   # Методы работы с треками
+│   ├── utils/                 # Вспомогательные функции
+│   │   ├── applyFilters.ts    # Логика фильтрации
+│   │   └── helper.ts          # Утилиты (formatTime, getUniqueValuesByKey)
+│   ├── sharedTypes/           # TypeScript интерфейсы
+│   │   └── sharedTypes.ts     # TrackType, PlayListType и др.
+│   └── data/                  # Моковые данные для тестов
+│       └── index.ts
+├── public/                    # Статические файлы
+│   └── img/                   # Иконки, изображения, спрайты
+├── tests/                     # Конфигурация тестов
+│   ├── jest.config.js
+│   ├── jest.setup.ts
+│   └── tsconfig.jest.json
+├── __mocks__/                 # Моки для Jest
+│   └── fileMock.js
+├── package.json
+├── tsconfig.json
+├── next.config.mjs
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Установка и запуск
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Требования
+- Node.js 18+
+- npm 9+ или yarn 1.22+
 
-## Learn More
+### Шаги установки
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# 1. Клонируйте репозиторий
+git clone <url-репозитория>
+cd skypro-music
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# 2. Установите зависимости
+npm install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# 3. Создайте файл окружения (если требуется)
+cp .env.example .env.local
 
-## Deploy on Vercel
+# 4. Запустите проект в режиме разработки
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Приложение будет доступно по адресу: [http://localhost:3000](http://localhost:3000)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Доступные скрипты
+
+```bash
+# Запуск в режиме разработки (с Turbopack)
+npm run dev
+
+# Сборка для продакшена
+npm run build
+
+# Запуск продакшен-сборки
+npm run start
+
+# Запуск тестов
+npm test
+
+# Запуск тестов в режиме watch
+npm run test:watch
+
+# Запуск тестов с отчётом о покрытии
+npm run test:coverage
+
+# Проверка линтером
+npm run lint
+
+# Форматирование кода
+npm run format
+```
+
+---
+
+## 🧪 Тестирование
+
+Проект покрыт модульными тестами с использованием **Jest** и **React Testing Library**.
+
+### Что протестировано:
+
+| Модуль | Покрытие | Описание |
+|--------|----------|----------|
+| `utils/helper.ts` | ✅ 100% | `formatTime`, `getUniqueValuesByKey`, `getUniqueYears` |
+| `utils/applyFilters.ts` | ✅ 100% | Фильтрация, поиск, сортировка, крайние случаи |
+| `Track.tsx` | ✅ Основные сценарии | Отрисовка данных, взаимодействие |
+| `Filter.tsx` | ✅ Основные сценарии | Открытие/закрытие фильтров, выбор значений |
+| `Search.tsx` | ✅ Основные сценарии | Ввод поиска, debounce |
+| `Tracklist.tsx` | ✅ Основные сценарии | Отображение списка, состояния загрузки и ошибок |
+
+### Запуск тестов
+
+```bash
+# Все тесты
+npm test
+
+# Конкретный тест-файл
+npm test -- track.test.tsx
+
+# С отчётом о покрытии
+npm test -- --coverage
+```
+
+Отчёт о покрытии будет сгенерирован в папке `coverage/`.
+
+---
+
+## 🎓 Чему я научилась в этом проекте
+
+### Технические навыки
+- ✅ Работа с **Next.js App Router** и серверными компонентами
+- ✅ Управление глобальным состоянием через **Redux Toolkit**
+- ✅ Типизация сложных структур данных на **TypeScript**
+- ✅ Интеграция с **REST API** и обработка ошибок
+- ✅ Настройка и написание тестов на **Jest**
+- ✅ Оптимизация производительности (debounce, memoization)
+- ✅ Работа с CSS Modules и адаптивной вёрсткой
+
+### Архитектурные принципы
+- ✅ Разделение ответственности (components / utils / services / store)
+- ✅ Принцип единственного источника истины (Redux)
+- ✅ Чистые функции и иммутабельность
+- ✅ Переиспользование кода через хуки и утилиты
+
+### Процессы разработки
+- ✅ Работа с Git и Pull Requests
+- ✅ Code review и рефакторинг
+- ✅ Отладка и работа с консолью разработчика
+- ✅ Следование код-стайлу (ESLint, Prettier)
+
+---
+
+## 👤 Автор
+
+**Шаханова Нина**  
+Студент курса «React-разработчик» платформы SkyPro
+
+📧 statika149@gmail.com  
+🔗 [GitHub](https://github.com/Statika3k)  
+
+---
+
+## 📄 Лицензия
+
+Проект создан в учебных целях. Код распространяется по лицензии **MIT**.
+
+```
+MIT License
+
+Copyright (c) 2026 Иванов Иван
+
+Разрешается бесплатное использование, копирование, изменение
+и распространение данного программного обеспечения при условии
+сохранения данного уведомления о лицензировании.
+```
+
+---
+
+> ⚠️ **Примечание**: Данный проект является учебным и может содержать упрощения, не рекомендованные для продакшен-использования.
+
+---
+
+**Спасибо за внимание!** 🎵✨  
