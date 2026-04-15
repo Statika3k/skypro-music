@@ -1,39 +1,59 @@
 'use client';
 
 import Centerblock from '@/components/Centerblock/Centerblock';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { getAllTracks } from '@/services/tracks/tracksApi';
-import { TrackType } from '@/sharedTypes/sharedTypes';
 import { AxiosError } from 'axios';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import {
+  resetFilters,
+  setAllTracks,
+  setFetchError,
+  setFetchIsLoading,
+} from '@/store/features/trackSlice';
 
 export default function Home() {
-  const [tracks, setTracks] = useState<TrackType[]>([]);
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const { filterTracks, fetchIsLoading, fetchError } = useAppSelector(
+    (state) => state.tracks,
+  );
 
   useEffect(() => {
+    dispatch(resetFilters());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(setFetchIsLoading(true));
     getAllTracks()
-      .then((res) => {
-        setTracks(res);
+      .then((res) => {        
+        dispatch(setAllTracks(res));
+        dispatch(setFetchError(''));
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
           if (error.response) {
-            setError(error.response.data);
+            dispatch(setFetchError(error.response.data));
           } else if (error.request) {
-            setError('Отсутствует интернет. Попробуйте позже');
+            dispatch(setFetchError('Отсутствует интернет. Попробуйте позже'));
           } else {
-            setError('Неизвестная ошибка. Попробуйте позже');
+            dispatch(setFetchError('Неизвестная ошибка. Попробуйте позже'));
           }
         }
       })
       .finally(() => {
-        setIsLoading(false);
+        dispatch(setFetchIsLoading(false));
       });
-  }, []);
+  }, [dispatch]);
+
   return (
     <>
-    <Centerblock playList={tracks} isLoading={isLoading} error={error}/>
+      <Centerblock
+        key="main"
+        playList={filterTracks}
+        namePlaylist="Треки"
+        isLoading={fetchIsLoading}
+        error={fetchError || ''}
+      />
     </>
   );
 }

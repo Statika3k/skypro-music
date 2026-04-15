@@ -21,6 +21,10 @@ export default function Tracklist({
       {error ? <div className={styles.errorContainer}>{error}</div> : null}
       {isLoading ? (
         <Loading />
+      ) : playList.length === 0 ? (
+        <div className={styles.noTracks}>
+          <p>Нет подходящих треков</p>
+        </div>
       ) : (
         <div className={styles.content__playlist}>
           {playList.map((track) => {
