@@ -56,13 +56,9 @@ export default function Signin() {
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
-          if (error.response) {
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
+          if (error.response) {            
             setErrorMessage(error.response.data.message);
-          } else if (error.request) {
-            console.log(error.request);
+          } else if (error.request) {            
             setErrorMessage('Отсутствует интернет. Попробуйте позже');
           } else {
             setErrorMessage('Неизвестная ошибка. Попробуйте позже');

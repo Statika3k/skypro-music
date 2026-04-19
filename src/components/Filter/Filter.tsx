@@ -1,7 +1,7 @@
 'use client';
 import { getUniqueValuesByKey } from '@/utils/helper';
 import styles from '@filter/filter.module.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import FilterItem from '@/components/FilterItem/FilterItem';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import {
@@ -15,16 +15,6 @@ export default function Filter() {
   const dispatch = useAppDispatch();
 
   const { allTracks, filters } = useAppSelector((state) => state.tracks);
-
-  // ✅ Проверка в консоли
-  useEffect(() => {
-    console.log('allTracks в Filter:', allTracks);
-    console.log('Количество треков:', allTracks.length);
-  }, [allTracks]);
-
-  useEffect(() => {
-    console.log('🎵 Текущие фильтры:', filters);
-  }, [filters]);
 
   const changeActiveFilter = (nameFilter: string) => {
     if (activeFilter === nameFilter) {

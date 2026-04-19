@@ -22,6 +22,22 @@ export type initialStateType = {
   };
 };
 
+const getInitialFavoriteTracks = (): TrackType[] => {
+  if (typeof window === 'undefined') {
+    return [];
+  }
+
+  const saved = localStorage.getItem('favoriteTracks');
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch {
+      return [];
+    }
+  }
+  return [];
+};
+
 const initialState: initialStateType = {
   currentTrack: null,
   isPlay: false,
@@ -29,7 +45,7 @@ const initialState: initialStateType = {
   allTracks: [],
   shuffledPlayList: [],
   currentPlaylist: [],
-  favoriteTracks: [],
+  favoriteTracks: getInitialFavoriteTracks(),
   fetchError: null,
   fetchIsLoading: true,
   pagePlaylist: [],
@@ -110,6 +126,9 @@ const trackSlice = createSlice({
     },
     setFavoriteTracks: (state, action: PayloadAction<TrackType[]>) => {
       state.favoriteTracks = action.payload;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('favoriteTracks', JSON.stringify(action.payload));
+      }
     },
     addLikedTracks: (state, action: PayloadAction<TrackType>) => {
       const exists = state.favoriteTracks.some(
@@ -117,12 +136,24 @@ const trackSlice = createSlice({
       );
       if (!exists) {
         state.favoriteTracks = [...state.favoriteTracks, action.payload];
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(
+            'favoriteTracks',
+            JSON.stringify(state.favoriteTracks),
+          );
+        }
       }
     },
     removeLikedTracks: (state, action: PayloadAction<number>) => {
       state.favoriteTracks = state.favoriteTracks.filter(
         (track) => track._id !== action.payload,
       );
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(
+          'favoriteTracks',
+          JSON.stringify(state.favoriteTracks),
+        );
+      }
     },
     setFetchError: (state, action: PayloadAction<string>) => {
       state.fetchError = action.payload;
